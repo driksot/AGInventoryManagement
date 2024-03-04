@@ -17,16 +17,16 @@ public class UpdateStockOnHandCommandHandler(IApplicationDbContext context) : IR
 
         stock.QuantityOnHand += request.Adjustment;
 
-        var snapshot = new StockSnapshot(
-            Guid.NewGuid(),
-            stock.Id,
-            stock.ProductId,
-            DateTime.UtcNow,
-            stock.QuantityOnHand);
+        //var snapshot = new StockSnapshot(
+        //    Guid.NewGuid(),
+        //    stock.Id,
+        //    stock.ProductId,
+        //    DateTime.UtcNow,
+        //    stock.QuantityOnHand);
 
-        stock.Snapshots.Add(snapshot);
+        //stock.Snapshots.Add(snapshot);
 
-        _context.StockSnapshots.Add(snapshot);
+        //_context.StockSnapshots.Add(snapshot);
 
         await _context.SaveChangesAsync(cancellationToken);
     }
