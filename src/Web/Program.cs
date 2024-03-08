@@ -15,6 +15,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     await app.InitialiseDatabaseAsync();
+    app.UseWebAssemblyDebugging();
 }
 else
 {
@@ -24,6 +25,7 @@ else
 
 app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
+app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
 app.UseSwaggerUi(settings =>
@@ -42,7 +44,7 @@ app.MapFallbackToFile("index.html");
 
 app.UseExceptionHandler(options => { });
 
-app.Map("/", () => Results.Redirect("/api"));
+//app.Map("/", () => Results.Redirect("/api"));
 
 app.MapEndpoints();
 

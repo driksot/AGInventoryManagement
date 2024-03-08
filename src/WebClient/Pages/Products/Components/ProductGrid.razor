@@ -1,0 +1,30 @@
+﻿<div class="grid">
+    <QuickGrid Items="@products" Pagination="@pagination">
+        <PropertyColumn Property="@(p => p.Name)" />
+        <PropertyColumn Property="@(p => p.Description)" />
+    </QuickGrid>
+</div>
+
+<Paginator State="@pagination" />
+
+@code {
+    IQueryable<ProductVM>? products;
+    PaginationState pagination = new PaginationState { ItemsPerPage = 15 };
+    string nameFilter = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        products = new[]
+        {
+            new ProductVM() { Name = "Product 1", Description = "New Product" },
+            new ProductVM() { Name = "Product 2", Description = "Different Product" }
+        }.AsQueryable();
+    }
+
+    public class ProductVM
+    {
+        public string Name { get; set; } = string.Empty;
+
+        public string? Description { get; set; }
+    }
+}
