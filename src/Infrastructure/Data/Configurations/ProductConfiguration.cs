@@ -9,6 +9,9 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
     {
         builder.HasKey(product => product.Id);
 
+        builder.Property(product => product.Id)
+            .ValueGeneratedNever();
+
         builder.Property(product => product.Name)
             .HasMaxLength(200);
 
@@ -18,8 +21,14 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(product => product.Price)
             .HasColumnType("decimal(18,2)");
 
-        builder.Property(p => p.Sku).HasConversion(
-            sku => sku.Value,
-            value => Sku.Create(value)!);
+        builder.Property(p => p.Sku)
+            .HasConversion(
+                sku => sku.Value,
+                value => Sku.Create(value)!);
+
+        builder.HasQueryFilter(product => !product.IsDeleted);
+
+        builder.HasIndex(product => product.IsDeleted)
+            .HasFilter("IsDeleted = 0");
     }
 }

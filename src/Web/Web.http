@@ -137,3 +137,40 @@ DELETE {{Web_HostAddress}}/api/TodoItems/1
 Authorization: Bearer {{BearerToken}}
 
 ###
+
+# GET Products
+@PageNumber = 1
+@PageSize = 10
+GET {{Web_HostAddress}}/api/Products?Page={{PageNumber}}&PageSize={{PageSize}}
+
+Authorization: Bearer {{BearerToken}}
+
+###
+
+@productId=d3d97a78-808c-4f49-b14f-08dc3bb9af21
+
+# PUT Products
+PUT {{Web_HostAddress}}/api/Products/{{productId}}
+Authorization: Bearer {{BearerToken}}
+Content-Type: application/json
+
+// UpdateProductRequest
+{
+  "Name": "Updated Product 2",
+  "Description": "Updated description",
+  "Price" : 20.75
+}
+
+###
+
+# POST Products
+POST {{Web_HostAddress}}/api/Products
+Authorization: Bearer {{BearerToken}}
+Content-Type: application/json
+
+// CreateProductCommand
+{
+  "Name": "New Product",
+  "Description": "This is a bit of a longer description to make sure things are working correctly.",
+  "Price" : 42
+}

@@ -1,0 +1,46 @@
+﻿<EditForm Model="Product" OnValidSubmit="HandleValidSubmit">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField @bind-Value="Product.Name" Label="Name" Variant="Variant.Outlined" Class="mb-4" />
+                    <MudTextField @bind-Value="Product.Description" Label="Description" Variant="Variant.Outlined" Lines="8" Class="mb-4" />
+                    <MudNumericField @bind-Value="Product.Price"
+                                     Label="Price"
+                                     Format="F2"
+                                     Step="1.0M"
+                                     Min="0.0M"
+                                     Variant="Variant.Outlined"
+                                     Adornment="Adornment.Start"
+                                     AdornmentIcon="@Icons.Material.Filled.AttachMoney"
+                                     AdornmentColor="Color.Primary"
+                                     Class="mb-4" />
+                </MudCardContent>
+                <MudCardActions Class="ms-2 pb-2">
+                    <MudButton Variant="Variant.Filled"
+                               StartIcon="@Icons.Material.Filled.Save"
+                               Color="Color.Primary"
+                               ButtonType="MudBlazor.ButtonType.Submit">
+                        Save
+                    </MudButton>
+                    <MudButton Variant="Variant.Filled"
+                               StartIcon="@Icons.Material.Filled.ArrowBack"
+                               Color="Color.Secondary"
+                               Class="ms-2"
+                               Href="/products">
+                        Back
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+        @*<MudItem xs="2">
+        <MudCard>
+        <MudCardContent Class="d-flex justify-content-center" Style="flex-direction:column">
+        <ImageUpload OnChange="AssignImageUrl" ImgUrl="@Product.ImageUrl" />
+        </MudCardContent>
+        </MudCard>
+        </MudItem>*@
+    </MudGrid>
+</EditForm>
+
+

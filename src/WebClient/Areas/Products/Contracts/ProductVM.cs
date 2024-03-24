@@ -9,13 +9,8 @@ public class ProductVM
     [Required(ErrorMessage = "Name is a required field")]
     public string Name { get; set; } = string.Empty;
 
-    public string? Description { get; set; }
+    public string Description { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Price is a required field")]
     public decimal Price { get; set; }
-
-    [Required(ErrorMessage = "Sku is a required field")]
-    public string Sku { get; set; } = string.Empty;
-
-    public bool IsArchived { get; set; }
 }

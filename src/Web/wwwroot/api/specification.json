@@ -80,11 +80,11 @@
         ],
         "operationId": "CreateProduct",
         "requestBody": {
-          "x-name": "command",
+          "x-name": "request",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateProductCommand"
+                "$ref": "#/components/schemas/CreateProductRequest"
               }
             }
           },
@@ -155,11 +155,11 @@
           }
         ],
         "requestBody": {
-          "x-name": "command",
+          "x-name": "request",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateProductCommand"
+                "$ref": "#/components/schemas/UpdateProductRequest"
               }
             }
           },
@@ -857,7 +857,7 @@
           }
         }
       },
-      "CreateProductCommand": {
+      "CreateProductRequest": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -865,26 +865,18 @@
             "type": "string"
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "price": {
             "type": "number",
             "format": "decimal"
-          },
-          "sku": {
-            "type": "string"
           }
         }
       },
-      "UpdateProductCommand": {
+      "UpdateProductRequest": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "productId": {
-            "type": "string",
-            "format": "guid"
-          },
           "name": {
             "type": "string"
           },

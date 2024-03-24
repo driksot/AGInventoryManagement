@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Text;
+using System.Text.Json;
 using AGInventoryManagement.WebClient.Areas.Common.Contracts;
 using AGInventoryManagement.WebClient.Areas.Common.Services;
 using AGInventoryManagement.WebClient.Areas.Products.Contracts;
@@ -13,7 +14,20 @@ public class ProductService(
     : BaseHttpService(httpClient, localStorage), IProductService
 {
     private const string _productUrl = "api/Products";
+    private const string _mediaType = "application/json";
     private readonly JsonSerializerOptions _options = new() { PropertyNameCaseInsensitive = true };
+
+    public async Task<ProductResponse> GetProductByIdAsync(Guid productId)
+    {
+        var response = await _httpClient.GetAsync($"{_productUrl}/{productId}");
+        var content = await response.Content.ReadAsStringAsync();
+
+        var product = JsonSerializer.Deserialize<ProductResponse>(content, _options);
+
+        if (product is null) throw new Exception();
+
+        return product;
+    }
 
     public async Task<PagingResponse<ProductResponse>> GetProductListAsync(PaginationRequest pagination)
     {
@@ -36,5 +50,47 @@ public class ProductService(
         if (products is null) throw new Exception();
 
         return products;
+    }
+
+    public async Task CreateProductAsync(ProductVM product)
+    {
+        var content = JsonSerializer.Serialize(product);
+        var bodyContent = new StringContent(content, Encoding.UTF8, _mediaType);
+
+        var postResult = await _httpClient.PostAsync(_productUrl, bodyContent);
+        var postContent = await postResult.Content.ReadAsStringAsync();
+
+        if (!postResult.IsSuccessStatusCode)
+        {
+            throw new ApplicationException(postContent);
+        }
+    }
+
+    public async Task UpdateProductAsync(ProductVM product)
+    {
+        var content = JsonSerializer.Serialize(product);
+        var bodyContent = new StringContent(content, Encoding.UTF8, _mediaType);
+        var url = Path.Combine(_productUrl, product.Id.ToString());
+
+        var putResult = await _httpClient.PutAsync(url, bodyContent);
+        var putContent = await putResult.Content.ReadAsStringAsync();
+
+        if (!putResult.IsSuccessStatusCode)
+        {
+            throw new ApplicationException(putContent);
+        }
+    }
+
+    public async Task DeleteProductAsync(Guid productId)
+    {
+        var url = Path.Combine(_productUrl, productId.ToString());
+
+        var deleteResult = await _httpClient.DeleteAsync(url);
+        var deleteContent = await deleteResult.Content.ReadAsStringAsync();
+
+        if (!deleteResult.IsSuccessStatusCode)
+        {
+            throw new ApplicationException(deleteContent);
+        }
     }
 }

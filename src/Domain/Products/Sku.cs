@@ -2,7 +2,7 @@
 
 public record Sku
 {
-    private const int DefaultLength = 8;
+    private const int DefaultLength = 12;
 
     private Sku(string value) => Value = value;
 

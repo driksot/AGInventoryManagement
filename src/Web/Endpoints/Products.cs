@@ -36,16 +36,25 @@ public class Products : EndpointGroupBase
         return result.Value;
     }
 
-    public async Task<Guid> CreateProduct(ISender sender, CreateProductCommand command)
+    public async Task<Guid> CreateProduct(ISender sender, CreateProductRequest request)
     {
+        var command = new CreateProductCommand(
+            request.Name,
+            request.Description,
+            request.Price);
+
         var result = await sender.Send(command);
 
         return result.Value;
     }
 
-    public async Task<IResult> UpdateProduct(ISender sender, Guid id, UpdateProductCommand command)
+    public async Task<IResult> UpdateProduct(ISender sender, Guid id, UpdateProductRequest request)
     {
-        if (id != command.ProductId) return Results.BadRequest();
+        var command = new UpdateProductCommand(
+            id,
+            request.Name,
+            request.Description,
+            request.Price);
 
         await sender.Send(command);
 
