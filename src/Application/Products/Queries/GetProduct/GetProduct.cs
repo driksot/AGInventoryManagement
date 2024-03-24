@@ -1,18 +1,21 @@
 ﻿using AGInventoryManagement.Application.Common.Interfaces;
 using AGInventoryManagement.Application.Products.Queries.GetProductList;
+using AGInventoryManagement.Domain.Common;
+using AGInventoryManagement.Domain.Products;
 
 namespace AGInventoryManagement.Application.Products.Queries.GetProduct;
 
-public record GetProductQuery(Guid ProductId) : IRequest<ProductDto>;
+public record GetProductQuery(Guid ProductId) : IRequest<DomainResult<ProductDto>>;
 
-public class GetProductQueryHandler(IApplicationDbContext context) : IRequestHandler<GetProductQuery, ProductDto>
+public class GetProductQueryHandler(IApplicationDbContext context)
+    : IRequestHandler<GetProductQuery, DomainResult<ProductDto>>
 {
     private readonly IApplicationDbContext _context = context;
 
-    public async Task<ProductDto> Handle(GetProductQuery request, CancellationToken cancellationToken)
+    public async Task<DomainResult<ProductDto>> Handle(GetProductQuery query, CancellationToken cancellationToken)
     {
         var product = await _context.Products
-            .Where(p => p.Id == request.ProductId)
+            .Where(p => p.Id == query.ProductId)
             .Include(p => p.Stock)
             .Select(p => new ProductDto()
             {
@@ -26,8 +29,8 @@ public class GetProductQueryHandler(IApplicationDbContext context) : IRequestHan
             })
             .FirstOrDefaultAsync(cancellationToken);
 
-        Guard.Against.NotFound(request.ProductId, product);
-
-        return product;
+        return product is null
+            ? DomainResult.Failure<ProductDto>(ProductErrors.NotFound)
+            : product;
     }
 }

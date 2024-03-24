@@ -11,10 +11,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Areas\Products\" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" />
+    <PackageReference Include="MudBlazor" />
   </ItemGroup>
 
 </Project>

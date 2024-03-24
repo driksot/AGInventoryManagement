@@ -1,33 +1,52 @@
 ﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-    <main>
-        <div class="top-row px-4">
-            <AuthorizeView>
-                <Authorized>
-                    <span class="fw-bold text-primary">@context.User.Identity!.Name </span>
-                    <button class="btn btn-link fw-bold text-danger" @onclick="Logout">Logout</button>
-                </Authorized>
-                <NotAuthorized>
-                    <a class="btn btn-link text-decoration-none text-primary fw-bold" href="/login">Login</a>
-                    <a class="btn btn-link text-decoration-none text-danger fw-bold" href="/register">Register</a>
-                </NotAuthorized>
-            </AuthorizeView>
-        </div>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+<MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudText Typo="Typo.h5" Class="ml-3">AG INVENTORY</MudText>
+        <MudSpacer />
+        <MudTooltip Text="Toggle Dark Mode">
+            <MudSwitch @bind-Value="@_isDarkMode" Color="Color.Primary" Class="ma-4" T="bool" ThumbIcon="@(_isDarkMode==true ? Icons.Material.Filled.DarkMode : Icons.Material.Filled.LightMode)" />
+        </MudTooltip>
+        <LoginDisplay />
+    </MudAppBar>
+    <MudDrawer @bind-Open="@_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
+            <CascadingValue Value="_theme">
+                @Body
+            </CascadingValue>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
 
 @code {
-    private async Task Logout()
+    private MudTheme _theme = new();
+    private bool _isDarkMode;
+    bool _drawerOpen = true;
+
+    protected override void OnInitialized()
     {
-        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
-        await customAuthStateProvider.UpdateAuthenticationState(null!);
-        NavManager.NavigateTo("/", replace: true);
+        _isDarkMode = false;
+        _theme = CustomTheme.DefaultTheme;
+    }
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    private void DarkMode()
+    {
+        _isDarkMode = !_isDarkMode;
+        _theme = _isDarkMode
+            ? CustomTheme.DarkTheme
+            : CustomTheme.DefaultTheme;
     }
 }

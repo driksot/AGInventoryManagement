@@ -1,6 +1,6 @@
 ﻿using AGInventoryManagement.Domain.Common;
 
-namespace AGInventoryManagement.Domain.Products.Event;
+namespace AGInventoryManagement.Domain.Products.Events;
 
 public class ProductUpdatedEvent(Product product) : BaseEvent
 {

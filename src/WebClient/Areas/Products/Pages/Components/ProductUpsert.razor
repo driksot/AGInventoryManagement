@@ -1,0 +1,44 @@
+﻿@* <RadzenTemplateForm Data="@_product" TItem="ProductVM" Submit="@Submit">
+    <RadzenRow Gap="2rem" Class="rz-p-0 rz-p-lg-4">
+        <RadzenColumn Size="12">
+            <RadzenStack>
+                <RadzenFieldset>
+                    <RadzenStack Gap="1rem">
+                        <RadzenFormField Text="Sku" Variant="Variant.Outlined">
+                            <RadzenTextBox @bind-Value="@_product.Sku" />
+                        </RadzenFormField>
+                    </RadzenStack>
+                    <RadzenStack Gap="1rem">
+                        <RadzenFormField Text="Name" Variant="Variant.Outlined">
+                            <RadzenTextBox @bind-Value="@_product.Name" />
+                        </RadzenFormField>
+                    </RadzenStack>
+                    <RadzenStack Gap="1rem">
+                        <RadzenFormField Text="Description" Variant="Variant.Outlined">
+                            <RadzenTextArea @bind-Value="@_product.Description" />
+                        </RadzenFormField>
+                    </RadzenStack>
+                    <RadzenStack Gap="1rem">
+                        <RadzenFormField Text="Price" Variant="Variant.Outlined">
+                            <RadzenNumeric @bind-Value="@_product.Price" />
+                        </RadzenFormField>
+                    </RadzenStack>
+                </RadzenFieldset>
+            </RadzenStack>
+        </RadzenColumn>
+    </RadzenRow>
+</RadzenTemplateForm> *@
+
+@code {
+    private ProductVM _product = new();
+
+    void Submit()
+    {
+        
+    }
+
+    void Cancel()
+    {
+        
+    }
+}

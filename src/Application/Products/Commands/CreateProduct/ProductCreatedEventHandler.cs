@@ -1,9 +1,10 @@
-﻿using AGInventoryManagement.Domain.Products.Event;
+﻿using AGInventoryManagement.Domain.Products.Events;
 using Microsoft.Extensions.Logging;
 
 namespace AGInventoryManagement.Application.Products.Commands.CreateProduct;
 
-public class ProductCreatedEventHandler(ILogger<ProductCreatedEventHandler> logger) : INotificationHandler<ProductArchivedEvent>
+public class ProductCreatedEventHandler(ILogger<ProductCreatedEventHandler> logger) 
+    : INotificationHandler<ProductArchivedEvent>
 {
     private readonly ILogger<ProductCreatedEventHandler> _logger = logger;
 

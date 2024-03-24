@@ -1,33 +1,34 @@
 ﻿using AGInventoryManagement.Application.Common.Interfaces;
+using AGInventoryManagement.Domain.Common;
 using AGInventoryManagement.Domain.Stocks;
 
 namespace AGInventoryManagement.Application.Stocks.Commands.UpdateStockOnHand;
 
-public record UpdateStockOnHandCommand(Guid ProductId, int Adjustment) : IRequest;
+public record UpdateStockOnHandCommand(Guid ProductId, int Adjustment) : IRequest<DomainResult>;
 
-public class UpdateStockOnHandCommandHandler(IApplicationDbContext context) : IRequestHandler<UpdateStockOnHandCommand>
+public class UpdateStockOnHandCommandHandler(IApplicationDbContext context) 
+    : IRequestHandler<UpdateStockOnHandCommand, DomainResult>
 {
     private readonly IApplicationDbContext _context = context;
 
-    public async Task Handle(UpdateStockOnHandCommand request, CancellationToken cancellationToken)
+    public async Task<DomainResult> Handle(UpdateStockOnHandCommand command, CancellationToken cancellationToken)
     {
-        var stock = await _context.Stocks.FirstOrDefaultAsync(s => s.ProductId == request.ProductId, cancellationToken);
+        var stock = await _context.Stocks.FirstOrDefaultAsync(s => s.ProductId == command.ProductId, cancellationToken);
 
-        Guard.Against.NotFound(request.ProductId, stock);
+        if (stock is null)
+        {
+            return DomainResult.Failure(StockErrors.NotFound);
+        }
 
-        stock.QuantityOnHand += request.Adjustment;
+        var updateStockOnHandResult = stock.UpdateQuantityOnHand(command.Adjustment);
 
-        //var snapshot = new StockSnapshot(
-        //    Guid.NewGuid(),
-        //    stock.Id,
-        //    stock.ProductId,
-        //    DateTime.UtcNow,
-        //    stock.QuantityOnHand);
-
-        //stock.Snapshots.Add(snapshot);
-
-        //_context.StockSnapshots.Add(snapshot);
+        if (updateStockOnHandResult.IsFailure)
+        {
+            return DomainResult.Failure(updateStockOnHandResult.Error);
+        }
 
         await _context.SaveChangesAsync(cancellationToken);
+
+        return DomainResult.Success();
     }
 }

@@ -2,28 +2,34 @@
 
 public class PaginatedList<T>
 {
-    public IReadOnlyCollection<T> Items { get; }
-    public int PageNumber { get; }
-    public int TotalPages { get; }
-    public int TotalCount { get; }
-
-    public PaginatedList(IReadOnlyCollection<T> items, int count, int pageNumber, int pageSize)
+    private PaginatedList(List<T> items, int page, int pageSize, int totalCount)
     {
-        PageNumber = pageNumber;
-        TotalPages = (int)Math.Ceiling(count / (double)pageSize);
-        TotalCount = count;
         Items = items;
+        Page = page;
+        PageSize = pageSize;
+        TotalCount = totalCount;
     }
 
-    public bool HasPreviousPage => PageNumber > 1;
+    public List<T> Items { get; }
 
-    public bool HasNextPage => PageNumber < TotalPages;
+    public int Page { get; }
 
-    public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageNumber, int pageSize)
+    public int PageSize { get; }
+
+    public int TotalCount { get; }
+
+    public bool HasNextPage => Page * PageSize < TotalCount;
+
+    public bool HasPreviousPage => Page > 1;
+
+    public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> query, int page, int pageSize)
     {
-        var count = await source.CountAsync();
-        var items = await source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+        var totalCount = await query.CountAsync();
+        var items = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
 
-        return new PaginatedList<T>(items, count, pageNumber, pageSize);
+        return new(items, page, pageSize, totalCount);
     }
 }

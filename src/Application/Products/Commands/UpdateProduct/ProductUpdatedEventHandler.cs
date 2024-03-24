@@ -1,4 +1,4 @@
-﻿using AGInventoryManagement.Domain.Products.Event;
+﻿using AGInventoryManagement.Domain.Products.Events;
 using Microsoft.Extensions.Logging;
 
 namespace AGInventoryManagement.Application.Products.Commands.UpdateProduct;

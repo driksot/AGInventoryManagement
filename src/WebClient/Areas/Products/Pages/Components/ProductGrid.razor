@@ -1,0 +1,90 @@
+﻿<MudTable 
+        ServerData="@(new Func<TableState, Task<TableData<ProductResponse>>>(ServerReload))" 
+        Dense="true" 
+        Hover="true" 
+        @ref="_table"
+>
+    <ToolBarContent>
+        <MudButton Href="products/new"
+                   DisableElevation
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Add"
+                   IconColor="Color.Surface">New Product</MudButton>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortLabel="sku" T="ProductResponse">Sku</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="name" T="ProductResponse">Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="description" T="ProductResponse">Description</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="price" T="ProductResponse">Price</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="stockOnHand" T="ProductResponse">Stock</MudTableSortLabel></MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="sku">@context.Sku</MudTd>
+        <MudTd DataLabel="name">@context.Name</MudTd>
+        <MudTd DataLabel="description">@context.Description</MudTd>
+        <MudTd DataLabel="price">@context.Price.ToString("c")</MudTd>
+        <MudTd DataLabel="stockOnHand">@context.StockOnHand</MudTd>
+        <MudTd>
+            <MudButton Href="@($"products/update/{context.Id}")"
+                       Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Edit"
+                       Color="Color.Primary" Class="ms-1 my-1">
+                Edit
+            </MudButton>
+            <MudButton Variant="Variant.Filled"
+                       StartIcon="@Icons.Material.Filled.Archive"
+                       Color="Color.Error"
+                       Class="ms-1 my-1">
+                Archive
+            </MudButton> @*TODO: Make this only visible to Admins*@
+        </MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+@code {
+    [CascadingParameter]
+    public ProductState State { get; set; } = null!;
+
+    private IEnumerable<ProductResponse> _pagedData = new List<ProductResponse>();
+    private MudTable<ProductResponse> _table = new();
+    private int _totalItems;
+    private string? _searchString = null;
+
+    private async Task<TableData<ProductResponse>> ServerReload(TableState tableState)
+    {
+
+        var pagingParams = new PaginationRequest(
+            _searchString, 
+            tableState.SortLabel,
+            tableState.SortDirection == MudBlazor.SortDirection.Descending ? "desc" : "asc",
+            tableState.Page > 0 ? tableState.Page : 1, 
+            tableState.PageSize);
+
+        await State.SetProductsAsync(pagingParams);
+        var data = State.Model!.Items.AsEnumerable();
+
+        _totalItems = State.Model!.TotalCount;
+        _pagedData = data;
+
+        return new TableData<ProductResponse>() { TotalItems = _totalItems, Items = _pagedData };
+    }
+
+    private void OnSearch(string text)
+    {
+        _searchString = text;
+        _table.ReloadServerData();
+    }
+}

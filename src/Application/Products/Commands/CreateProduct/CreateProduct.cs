@@ -1,6 +1,6 @@
 ﻿using AGInventoryManagement.Application.Common.Interfaces;
+using AGInventoryManagement.Domain.Common;
 using AGInventoryManagement.Domain.Products;
-using AGInventoryManagement.Domain.Stocks;
 
 namespace AGInventoryManagement.Application.Products.Commands.CreateProduct;
 
@@ -8,35 +8,33 @@ public record CreateProductCommand(
     string Name,
     string? Description,
     decimal Price,
-    string Sku) : IRequest<Guid>;
+    string Sku) : IRequest<DomainResult<Guid>>;
 
-public class CreateProductCommandHandler(IApplicationDbContext context) : IRequestHandler<CreateProductCommand, Guid>
+public class CreateProductCommandHandler(IApplicationDbContext context) 
+    : IRequestHandler<CreateProductCommand, DomainResult<Guid>>
 {
     private readonly IApplicationDbContext _context = context;
 
-    public async Task<Guid> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+    public async Task<DomainResult<Guid>> Handle(CreateProductCommand command, CancellationToken cancellationToken)
     {
-        var product = new Product
+        // Create a product
+        var createProductResult = Product.Create(
+            command.Name,
+            command.Description,
+            command.Price);
+
+        if (createProductResult.IsFailure)
         {
-            Name = request.Name,
-            Description = request.Description,
-            Price = request.Price,
-            Sku = Sku.Create(request.Sku)!
-        };
+            return DomainResult.Failure<Guid>(createProductResult.Error);
+        }
 
-        var stock = new Stock
-        {
-            ProductId = product.Id,
-            QuantityOnHand = 0,
-            IdealQuantity = 0,
-        };
+        var product = createProductResult.Value;
 
-        product.Stock = stock;
-
+        // Add product to database
         _context.Products.Add(product);
-
         await _context.SaveChangesAsync(cancellationToken);
 
+        // Return product ID
         return product.Id;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AGInventoryManagement.Application.Common.Interfaces;
+using AGInventoryManagement.Domain.Common;
 using AGInventoryManagement.Domain.Products;
 
 namespace AGInventoryManagement.Application.Products.Commands.UpdateProduct;
@@ -6,25 +7,36 @@ namespace AGInventoryManagement.Application.Products.Commands.UpdateProduct;
 public record UpdateProductCommand(
     Guid ProductId,
     string Name,
-    string? Description,
-    decimal Price,
-    string Sku) : IRequest;
+    string Description,
+    decimal Price) : IRequest<DomainResult>;
 
-public class UpdateProductCommandHandler(IApplicationDbContext context) : IRequestHandler<UpdateProductCommand>
+public class UpdateProductCommandHandler(IApplicationDbContext context) 
+    : IRequestHandler<UpdateProductCommand, DomainResult>
 {
     private readonly IApplicationDbContext _context = context;
 
-    public async Task Handle(UpdateProductCommand request, CancellationToken cancellationToken)
+    public async Task<DomainResult> Handle(UpdateProductCommand command, CancellationToken cancellationToken)
     {
-        var product = await _context.Products.FindAsync([request.ProductId], cancellationToken);
+        var product = await _context.Products.FindAsync([command.ProductId], cancellationToken);
 
-        Guard.Against.NotFound(request.ProductId, product);
+        if (product is null)
+        {
+            return DomainResult.Failure(ProductErrors.NotFound);
+        }
 
-        product.Name = request.Name;
-        product.Description = request.Description;
-        product.Price = request.Price;
-        product.Sku = Sku.Create(request.Sku)!;
+        var updateProductResult = product.Update(
+            command.Name,
+            command.Description,
+            command.Price);
 
+        if (updateProductResult.IsFailure)
+        {
+            return DomainResult.Failure(updateProductResult.Error);
+        }
+
+        _context.Products.Update(product);
         await _context.SaveChangesAsync(cancellationToken);
+
+        return DomainResult.Success();
     }
 }

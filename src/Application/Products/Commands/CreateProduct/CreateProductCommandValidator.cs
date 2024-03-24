@@ -4,8 +4,12 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
 {
     public CreateProductCommandValidator()
     {
-        RuleFor(p => p.Name).NotEmpty();
+        RuleFor(p => p.Name)
+            .NotEmpty()
+            .MinimumLength(3)
+            .MaximumLength(200);
 
-        RuleFor(p => p.Sku).NotEmpty();
+        RuleFor(p => p.Description)
+            .MaximumLength(2000);
     }
 }

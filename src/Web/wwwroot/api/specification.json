@@ -14,14 +14,41 @@
         "operationId": "GetProductList",
         "parameters": [
           {
-            "name": "PageNumber",
+            "name": "SearchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "SortColumn",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "SortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          },
+          {
+            "name": "Page",
             "in": "query",
             "required": true,
             "schema": {
               "type": "integer",
               "format": "int32"
             },
-            "x-position": 1
+            "x-position": 4
           },
           {
             "name": "PageSize",
@@ -31,7 +58,7 @@
               "type": "integer",
               "format": "int32"
             },
-            "x-position": 2
+            "x-position": 5
           }
         ],
         "responses": {
@@ -144,14 +171,12 @@
             "description": ""
           }
         }
-      }
-    },
-    "/api/Products/ArchiveProduct/{id}": {
-      "put": {
+      },
+      "delete": {
         "tags": [
           "Products"
         ],
-        "operationId": "ArchiveProduct",
+        "operationId": "DeleteProduct",
         "parameters": [
           {
             "name": "id",
@@ -164,18 +189,6 @@
             "x-position": 1
           }
         ],
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ArchiveProductCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 2
-        },
         "responses": {
           "200": {
             "description": ""
@@ -191,14 +204,41 @@
         "operationId": "GetLowStock",
         "parameters": [
           {
-            "name": "PageNumber",
+            "name": "SearchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "SortColumn",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "SortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          },
+          {
+            "name": "Page",
             "in": "query",
             "required": true,
             "schema": {
               "type": "integer",
               "format": "int32"
             },
-            "x-position": 1
+            "x-position": 4
           },
           {
             "name": "PageSize",
@@ -208,7 +248,7 @@
               "type": "integer",
               "format": "int32"
             },
-            "x-position": 2
+            "x-position": 5
           }
         ],
         "responses": {
@@ -233,14 +273,41 @@
         "operationId": "GetSnapshotHistory",
         "parameters": [
           {
-            "name": "PageNumber",
+            "name": "SearchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "SortColumn",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "SortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          },
+          {
+            "name": "Page",
             "in": "query",
             "required": true,
             "schema": {
               "type": "integer",
               "format": "int32"
             },
-            "x-position": 1
+            "x-position": 4
           },
           {
             "name": "PageSize",
@@ -250,7 +317,7 @@
               "type": "integer",
               "format": "int32"
             },
-            "x-position": 2
+            "x-position": 5
           }
         ],
         "responses": {
@@ -738,11 +805,11 @@
               "$ref": "#/components/schemas/ProductDto"
             }
           },
-          "pageNumber": {
+          "page": {
             "type": "integer",
             "format": "int32"
           },
-          "totalPages": {
+          "pageSize": {
             "type": "integer",
             "format": "int32"
           },
@@ -750,10 +817,10 @@
             "type": "integer",
             "format": "int32"
           },
-          "hasPreviousPage": {
+          "hasNextPage": {
             "type": "boolean"
           },
-          "hasNextPage": {
+          "hasPreviousPage": {
             "type": "boolean"
           }
         }
@@ -822,25 +889,11 @@
             "type": "string"
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "price": {
             "type": "number",
             "format": "decimal"
-          },
-          "sku": {
-            "type": "string"
-          }
-        }
-      },
-      "ArchiveProductCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "productId": {
-            "type": "string",
-            "format": "guid"
           }
         }
       },
@@ -854,11 +907,11 @@
               "$ref": "#/components/schemas/SnapshotDto"
             }
           },
-          "pageNumber": {
+          "page": {
             "type": "integer",
             "format": "int32"
           },
-          "totalPages": {
+          "pageSize": {
             "type": "integer",
             "format": "int32"
           },
@@ -866,10 +919,10 @@
             "type": "integer",
             "format": "int32"
           },
-          "hasPreviousPage": {
+          "hasNextPage": {
             "type": "boolean"
           },
-          "hasNextPage": {
+          "hasPreviousPage": {
             "type": "boolean"
           }
         }

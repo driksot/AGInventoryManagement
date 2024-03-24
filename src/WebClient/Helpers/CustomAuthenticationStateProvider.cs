@@ -48,7 +48,7 @@ public class CustomAuthenticationStateProvider(ILocalStorageService localStorage
         }
     }
 
-    private ClaimsPrincipal SetClaims(string email) => new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
+    private static ClaimsPrincipal SetClaims(string email) => new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
         {
             new(ClaimTypes.Name, email)
         }, "CustomAuth"));

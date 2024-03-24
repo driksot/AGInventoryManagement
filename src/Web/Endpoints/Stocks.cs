@@ -19,27 +19,35 @@ public class Stocks : EndpointGroupBase
             .MapPut(UpdateStockOnHand, "AdjustOnHand/{id}");
     }
 
-    public Task<PaginatedList<ProductDto>> GetLowStock(ISender sender, [AsParameters] GetLowStockQuery query)
+    public async Task<PaginatedList<ProductDto>> GetLowStock(ISender sender, [AsParameters] GetLowStockQuery query)
     {
-        return sender.Send(query);
+        var result = await sender.Send(query);
+
+        return result.Value;
     }
 
-    public Task<PaginatedList<SnapshotDto>> GetSnapshotHistory(ISender sender, [AsParameters] GetSnapshotListQuery query)
+    public async Task<PaginatedList<SnapshotDto>> GetSnapshotHistory(ISender sender, [AsParameters] GetSnapshotListQuery query)
     {
-        return sender.Send(query);
+        var result = await sender.Send(query);
+
+        return result.Value;
     }
 
     public async Task<IResult> UpdateStockIdeal(ISender sender, Guid id, UpdateStockIdealCommand command)
     {
         if (id != command.ProductId) return Results.BadRequest();
+
         await sender.Send(command);
+
         return Results.NoContent();
     }
 
     public async Task<IResult> UpdateStockOnHand(ISender sender, Guid id, UpdateStockOnHandCommand command)
     {
         if (id != command.ProductId) return Results.BadRequest();
+
         await sender.Send(command);
+
         return Results.NoContent();
     }
 }

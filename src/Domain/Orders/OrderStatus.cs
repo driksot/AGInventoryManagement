@@ -1,7 +1,57 @@
-﻿namespace AGInventoryManagement.Domain.Orders;
+﻿using Ardalis.SmartEnum;
 
-public enum OrderStatus
+namespace AGInventoryManagement.Domain.Orders;
+
+public abstract class OrderStatus : SmartEnum<OrderStatus>
 {
-    Generated = 0,
-    Closed = 1
+    public static readonly OrderStatus Generated = new GeneratedStatus();
+    public static readonly OrderStatus Completed = new CompletedStatus();
+    public static readonly OrderStatus Paid = new PaidStatus();
+    public static readonly OrderStatus Cancelled = new CancelledStatus();
+
+    protected OrderStatus(string name, int value) : base(name, value)
+    {
+    }
+
+    public abstract bool CanTransitionTo(OrderStatus next);
+
+    private sealed class GeneratedStatus : OrderStatus
+    {
+        public GeneratedStatus() : base("Generated", 0)
+        {
+        }
+
+        public override bool CanTransitionTo(OrderStatus next) => 
+            next == OrderStatus.Completed || next == OrderStatus.Cancelled;
+    }
+
+    private sealed class CompletedStatus : OrderStatus
+    {
+        public CompletedStatus() : base("Completed", 1)
+        {
+        }
+
+        public override bool CanTransitionTo(OrderStatus next) => 
+            next == OrderStatus.Paid || next == OrderStatus.Cancelled;
+    }
+
+    private sealed class PaidStatus : OrderStatus
+    {
+        public PaidStatus() : base("Paid", 2)
+        {
+        }
+
+        public override bool CanTransitionTo(OrderStatus next) =>
+            next == OrderStatus.Cancelled;
+    }
+
+    private sealed class CancelledStatus : OrderStatus
+    {
+        public CancelledStatus() : base("Cancelled", 3)
+        {
+        }
+
+        public override bool CanTransitionTo(OrderStatus next) =>
+            false;
+    }
 }
