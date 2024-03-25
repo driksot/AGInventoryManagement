@@ -33,7 +33,7 @@ public partial class ProductState
     protected override async Task OnInitializedAsync()
     {
         Model = await ProductService.GetProductListAsync(PaginationRequest);
-        SelectedProduct = Model.Items.First();
+        //SelectedProduct = Model.Items.First();
         Initialized = true;
     }
 
@@ -43,11 +43,11 @@ public partial class ProductState
         StateHasChanged();
     }
 
-    public void RemoveProduct()
+    public void RemoveProduct(Guid id)
     {
-        var product = Model!.Items.First(p => p.Id == SelectedProduct!.Id);
+        var product = Model!.Items.First(p => p.Id == id);
         Model!.Items.Remove(product);
-        SelectedProduct = Model.Items.First();
+        //SelectedProduct = Model.Items.First();
         StateHasChanged();
     }
 

@@ -1,0 +1,35 @@
+﻿<MudDialog>
+    <DialogContent>
+        <MudText>@ContentText</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="@Color" Variant="Variant.Filled" OnClick="Submit">@ButtonText</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter] public string ContentText { get; set; } = null!;
+
+    [Parameter] public string ButtonText { get; set; } = null!;
+
+    [Parameter] public Guid Id { get; set; }
+
+    [Parameter] public EventCallback<Guid> OnSubmit { get; set; }
+
+    [Parameter] public Color Color { get; set; }
+
+    void Submit() 
+    {
+        HandleOnSubmit(Id);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    void Cancel() => MudDialog.Cancel();
+
+    async void HandleOnSubmit(Guid id)
+    {
+        await OnSubmit.InvokeAsync(id);
+    }
+}
