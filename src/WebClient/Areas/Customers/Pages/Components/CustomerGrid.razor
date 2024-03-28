@@ -1,0 +1,45 @@
+﻿<MudTable ServerData="@(new Func<TableState, Task<TableData<CustomerResponse>>>(ServerReload))"
+          Dense="true"
+          Hover="true"
+          @ref="_table">
+    <ToolBarContent>
+        <MudButton Href="customers/new"
+                   DisableElevation
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Add"
+                   IconColor="Color.Surface">New Customer</MudButton>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortLabel="name" T="CustomerResponse">Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="phoneNumber" T="CustomerResponse">Phone Number</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="email" T="CustomerResponse">Email</MudTableSortLabel></MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="name">@context.Name</MudTd>
+        <MudTd DataLabel="phoneNumber">@context.PhoneNumber</MudTd>
+        <MudTd DataLabel="email">@context.Email</MudTd>
+        <MudTd>
+            <MudButton Variant="Variant.Filled"
+                       StartIcon="@Icons.Material.Filled.Delete"
+                       Color="Color.Error"
+                       Class="ms-1 my-1"
+                       OnClick="@(() => HandleDelete(context.Id))">
+                Delete
+            </MudButton> @*TODO: Make this only visible to Admins*@
+        </MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>

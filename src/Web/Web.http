@@ -174,3 +174,37 @@ Content-Type: application/json
   "Description": "This is a bit of a longer description to make sure things are working correctly.",
   "Price" : 42
 }
+
+###
+
+# GET Customers
+@PageNumber = 1
+@PageSize = 10
+GET {{Web_HostAddress}}/api/Customers?Page={{PageNumber}}&PageSize={{PageSize}}
+
+Authorization: Bearer {{BearerToken}}
+
+###
+
+# POST Products
+POST {{Web_HostAddress}}/api/Customers
+Authorization: Bearer {{BearerToken}}
+Content-Type: application/json
+
+// CreateProductCommand
+{
+  "FirstName": "New",
+  "LastName": "Customer2",
+  "PhoneNumber": "555-555-5555",
+  "Email" : "customer2@email.com"
+}
+
+###
+
+@customerId=f49ff65f-952f-4da6-a3fd-d20ecc5397bc
+
+# DELETE TodoItem
+DELETE {{Web_HostAddress}}/api/Customers/{{customerId}}
+Authorization: Bearer {{BearerToken}}
+
+###

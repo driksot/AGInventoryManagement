@@ -1,0 +1,9 @@
+﻿@page "/customers/new"
+
+<PageTitle>@($"{_title} Customer")</PageTitle>
+
+<MudText Typo="Typo.h4" Class="card-title fw-bold mb-4" Color="Color.Primary">
+    @($"{_title} Customer")
+</MudText>
+
+<CustomerEditForm Customer="_customer" OnValidSubmit="HandleValidSubmit" />

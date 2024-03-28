@@ -1,0 +1,36 @@
+﻿<EditForm Model="Customer" OnValidSubmit="HandleValidSubmit">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField @bind-Value="Customer.FirstName" Label="First Name" Variant="Variant.Outlined" Class="mb-4" />
+                    <MudTextField @bind-Value="Customer.LastName" Label="Last Name" Variant="Variant.Outlined" Class="mb-4" />
+                    <MudTextField @bind-Value="Customer.PhoneNumber" Label="Phone Number" Variant="Variant.Outlined" Class="mb-4" />
+                    <MudTextField @bind-Value="Customer.Email" Label="Email" Variant="Variant.Outlined" Class="mb-4" />
+                </MudCardContent>
+                <MudCardActions Class="ms-2 pb-2">
+                    <MudButton Variant="Variant.Filled"
+                               StartIcon="@Icons.Material.Filled.Save"
+                               Color="Color.Primary"
+                               ButtonType="MudBlazor.ButtonType.Submit">
+                        Save
+                    </MudButton>
+                    <MudButton Variant="Variant.Filled"
+                               StartIcon="@Icons.Material.Filled.ArrowBack"
+                               Color="Color.Secondary"
+                               Class="ms-2"
+                               Href="/customers">
+                        Back
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+        @*<MudItem xs="2">
+        <MudCard>
+        <MudCardContent Class="d-flex justify-content-center" Style="flex-direction:column">
+        <ImageUpload OnChange="AssignImageUrl" ImgUrl="@Product.ImageUrl" />
+        </MudCardContent>
+        </MudCard>
+        </MudItem>*@
+    </MudGrid>
+</EditForm>

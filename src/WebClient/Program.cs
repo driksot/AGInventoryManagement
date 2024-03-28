@@ -1,4 +1,5 @@
 using AGInventoryManagement.WebClient;
+using AGInventoryManagement.WebClient.Areas.Customers.Services;
 using AGInventoryManagement.WebClient.Areas.Identity.Services;
 using AGInventoryManagement.WebClient.Areas.Products.Services;
 using AGInventoryManagement.WebClient.Helpers;
@@ -18,6 +19,7 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 
 await builder.Build().RunAsync();

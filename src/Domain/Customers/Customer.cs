@@ -18,13 +18,13 @@ public class Customer : BaseAuditableEntity, ISoftDeletable
         Email = email;
     }
 
-    public string FirstName { get; set; }
+    public string FirstName { get; private set; }
 
-    public string LastName { get; set; }
+    public string LastName { get; private set; }
 
-    public string PhoneNumber { get; set; }
+    public string PhoneNumber { get; private set; }
 
-    public string Email { get; set; }
+    public string Email { get; private set; }
 
     public bool IsDeleted { get; set; } = false;
 
