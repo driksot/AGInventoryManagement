@@ -15,4 +15,12 @@ public static class OrderErrors
     public static Error InvalidStatus = new(
         "Order.InvalidStatus",
         "The provided order status is invalid.");
+
+    public static Error LineItemNotFound = new(
+        "Order.LineItemNotFound",
+        "The line item with the specified ID was not found.");
+
+    public static Error LineItemRequired = new(
+        "Order.LineItemRequired",
+        "The order must have at least one line item.");
 }

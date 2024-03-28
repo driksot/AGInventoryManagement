@@ -22,17 +22,17 @@ public class Order : BaseAuditableEntity
         OrderDate = DateTime.Now;
     }
 
-    public string OrderNumber { get; set; }
+    public string OrderNumber { get; private set; }
 
-    public Guid CustomerId { get; set; }
+    public Guid CustomerId { get; private set; }
 
-    public OrderType Type { get; set; }
+    public OrderType Type { get; private set; }
 
-    public OrderStatus Status { get; set; } = OrderStatus.Generated;
+    public OrderStatus Status { get; private set; } = OrderStatus.Generated;
 
-    public DateTime OrderDate { get; set; }
+    public DateTime OrderDate { get; private set; }
 
-    public Address? OrderAddress { get; set; }
+    public Address? OrderAddress { get; private set; }
 
 
     private readonly List<LineItem> _lineItems = [];
@@ -41,6 +41,7 @@ public class Order : BaseAuditableEntity
 
     public static DomainResult<Order> Create(
         Guid customerId,
+        int orderCount,
         string type,
         string street,
         string? streetExt,
@@ -49,13 +50,13 @@ public class Order : BaseAuditableEntity
         string country,
         string postalCode)
     {
-        var orderNumber = "To be implemented";
-
         // Parse type string to OrderType enum and validate
         if (!OrderType.TryFromName(type, out var orderType))
         {
             return DomainResult.Failure<Order>(OrderErrors.InvalidType);
         }
+
+        var orderNumber = GenerateOrderNumber(orderCount + 1, orderType);
 
         var order = new Order(
             Guid.NewGuid(),
@@ -73,6 +74,68 @@ public class Order : BaseAuditableEntity
 
         return order;
     }
+
+    public DomainResult AddLineItem(Guid productId, decimal price)
+    {
+        var lineItem = new LineItem(
+            Guid.NewGuid(),
+            Id,
+            productId,
+            price);
+
+        if (Status == OrderStatus.Generated)
+        {
+            Status = OrderStatus.InProgress;
+        }
+
+        _lineItems.Add(lineItem);
+
+        return DomainResult.Success();
+    }
+
+    public DomainResult RemoveLineItem(Guid lineItemId)
+    {
+        if (HasOneLineItem())
+        {
+            return DomainResult.Failure(OrderErrors.LineItemRequired);
+        }
+
+        var lineItem = _lineItems.FirstOrDefault(li => li.Id == lineItemId);
+
+        if (lineItem is null)
+        {
+            return DomainResult.Failure(OrderErrors.LineItemNotFound);
+        }
+
+        _lineItems.Remove(lineItem);
+
+        return DomainResult.Success();
+    }
+
+    private static string GenerateOrderNumber(int orderCount, OrderType type)
+    {
+        var prefix = string.Empty;
+
+        string sequenceFormat = "00000000.##";
+
+        if (type == OrderType.Purchase)
+        {
+            prefix = "PO";
+        }
+
+        if (type == OrderType.Sales)
+        {
+            prefix = "SO";
+        }
+
+        var sequenceString = orderCount.ToString(sequenceFormat);
+
+        var orderNumber = string.Join("-", prefix, sequenceString);
+
+        return orderNumber;
+    }
+
+    private bool HasOneLineItem() => _lineItems.Count == 1;
 
 #pragma warning disable CS8618
     private Order() { } // EF

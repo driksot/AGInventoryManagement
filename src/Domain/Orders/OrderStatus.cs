@@ -5,7 +5,7 @@ namespace AGInventoryManagement.Domain.Orders;
 public abstract class OrderStatus : SmartEnum<OrderStatus>
 {
     public static readonly OrderStatus Generated = new GeneratedStatus();
-    public static readonly OrderStatus Completed = new CompletedStatus();
+    public static readonly OrderStatus InProgress = new InProgressStatus();
     public static readonly OrderStatus Paid = new PaidStatus();
     public static readonly OrderStatus Cancelled = new CancelledStatus();
 
@@ -22,12 +22,12 @@ public abstract class OrderStatus : SmartEnum<OrderStatus>
         }
 
         public override bool CanTransitionTo(OrderStatus next) => 
-            next == OrderStatus.Completed || next == OrderStatus.Cancelled;
+            next == OrderStatus.InProgress || next == OrderStatus.Cancelled;
     }
 
-    private sealed class CompletedStatus : OrderStatus
+    private sealed class InProgressStatus : OrderStatus
     {
-        public CompletedStatus() : base("Completed", 1)
+        public InProgressStatus() : base("Completed", 1)
         {
         }
 
