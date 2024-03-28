@@ -16,11 +16,14 @@ public class CreateProductCommandHandler(IApplicationDbContext context)
 
     public async Task<DomainResult<Guid>> Handle(CreateProductCommand command, CancellationToken cancellationToken)
     {
+        int count = _context.Products.Count();
+
         // Create a product
         var createProductResult = Product.Create(
             command.Name,
             command.Description,
-            command.Price);
+            command.Price,
+            count);
 
         if (createProductResult.IsFailure)
         {

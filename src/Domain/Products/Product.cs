@@ -5,7 +5,7 @@ namespace AGInventoryManagement.Domain.Products;
 
 public class Product : BaseAuditableEntity, ISoftDeletable
 {
-    private const string _agPrefix = "AG-";
+    private const string _agPrefix = "AG";
 
     private Product(
         Guid id,
@@ -37,10 +37,10 @@ public class Product : BaseAuditableEntity, ISoftDeletable
 
     public DateTime? DeletedOnUtc { get; set; }
 
-    public static DomainResult<Product> Create(string name, string? description, decimal price)
+    public static DomainResult<Product> Create(string name, string? description, decimal price, int productCount)
     {
         var productId = Guid.NewGuid();
-        var sku = Sku.Create(GenerateSku(name, productId));
+        var sku = Sku.Create(GenerateSku(name, productCount + 1));
 
         if (sku is null)
         {
@@ -75,11 +75,16 @@ public class Product : BaseAuditableEntity, ISoftDeletable
         return DomainResult.Success();
     }
 
-    private static string GenerateSku(string name, Guid productId)
+    private static string GenerateSku(string name, int productCount)
     {
-        var sku = _agPrefix
-            + name[..3].ToUpper()
-            + productId.ToString().ToUpper()[(productId.ToString().Length - 6)..];
+        // Format of sku = AG-GEM-00000
+        string sequenceFormat = "00000.##";
+
+        var shortName = name[..3].ToUpper();
+
+        var sequenceString = productCount.ToString(sequenceFormat);
+
+        var sku = string.Join("-", _agPrefix, shortName, sequenceString);
 
         return sku;
     }
